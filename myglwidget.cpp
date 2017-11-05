@@ -3,6 +3,8 @@
 MyGLWidget::MyGLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
+    translate=-6.0;
+    xRot=yRot=zRot=0.0;
 }
 
 void MyGLWidget::initializeGL()
@@ -25,5 +27,81 @@ void MyGLWidget::resizeGL(int w, int h)
 
 void MyGLWidget::paintGL()
 {
-    glTranslatef();
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
+    cout<<"start"<<endl;
+    glTranslatef(0.0,0.0,translate);
+    glRotatef(xRot,1.0,0.0,0.0);
+    glRotatef(yRot,0.0,1.0,0.0);
+    glRotatef(zRot,0.0,0.0,1.0);
+    glBegin(GL_QUADS);
+    //上面
+    glColor3f(1.0,0.0,0.0);
+    glVertex3f(1.0,1.0,1.0);
+    glVertex3f(1.0,1.0,-1.0);
+    glVertex3f(-1.0,1.0,-1.0);
+    glVertex3f(-1.0,1.0,1.0);
+    //下面
+    glColor3f(0.0,1.0,0.0);
+    glVertex3f(1.0,-1.0,1.0);
+    glVertex3f(1.0,-1.0,-1.0);
+    glVertex3f(-1.0,-1.0,-1.0);
+    glVertex3f(-1.0,-1.0,1.0);
+    //前面
+    glColor3f(0.0,0.0,1.0);
+    glVertex3f(1.0,1.0,1.0);
+    glVertex3f(-1.0,1.0,1.0);
+    glVertex3f(-1.0,-1.0,1.0);
+    glVertex3f(1.0,-1.0,1.0);
+    //后面
+    glColor3f(1.0,0.0,1.0);
+    glVertex3f(1.0,1.0,-1.0);
+    glVertex3f(-1.0,1.0,-1.0);
+    glVertex3f(-1.0,-1.0,-1.0);
+    glVertex3f(1.0,-1.0,-1.0);
+    //右面
+    glColor3f(1.0,1.0,0.0);
+    glVertex3f(1.0,1.0,1.0);
+    glVertex3f(1.0,1.0,-1.0);
+    glVertex3f(1.0,-1.0,-1.0);
+    glVertex3f(1.0,-1.0,1.0);
+    //左面
+    glColor3f(0.0,1.0,1.0);
+    glVertex3f(-1.0,1.0,1.0);
+    glVertex3f(-1.0,1.0,-1.0);
+    glVertex3f(-1.0,-1.0,-1.0);
+    glVertex3f(-1.0,-1.0,1.0);
+    glEnd();
+}
+
+void MyGLWidget::keyPressEvent(QKeyEvent *event)
+{
+    switch (event->key()) {
+    case Qt::Key_Up:
+        zRot+=10;
+        break;
+    case Qt::Key_Down:
+        zRot-=10;
+        break;
+    case Qt::Key_Left:
+        xRot+=10;
+        break;
+    case Qt::Key_Right:
+        xRot-=10;
+        break;
+    case Qt::Key_A:
+        translate+=1;
+        if(translate>=20){
+            translate=1;
+        }
+        break;
+    case Qt::Key_D:
+        translate-=1;
+        if(translate<=-20){
+            translate=-1;
+        }
+        break;
+    }
+    updateGL();
+    QGLWidget::keyPressEvent(event);
 }
